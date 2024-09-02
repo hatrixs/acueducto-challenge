@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -49,6 +50,15 @@ export default function Home() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [selectedStatusFilter, setSelectedStatusFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleOpenModal = (client: Client) => {
     setSelectedClient(client);
@@ -142,17 +152,48 @@ export default function Home() {
         </div>
 
         <div className="overflow-hidden rounded-lg border border-[#374151]">
-          <DataTable table={table} />
+          {isLoading ? (
+            <div className="space-y-1">
+              <div className="flex items-center p-4">
+                <Skeleton className="h-4 w-1/6" />
+                <Skeleton className="ml-4 h-4 w-1/6" />
+                <Skeleton className="ml-4 h-4 w-1/6" />
+                <Skeleton className="ml-4 h-4 w-1/6" />
+                <Skeleton className="ml-4 h-4 w-1/6" />
+                <Skeleton className="ml-4 h-4 w-1/6" />
+              </div>
+              {[...Array(10)].map((_, index) => (
+                <div
+                  key={index}
+                  className="flex items-center border-t border-gray-700 p-4"
+                >
+                  <Skeleton className="h-4 w-1/6" />
+                  <Skeleton className="ml-4 h-4 w-1/6" />
+                  <Skeleton className="ml-4 h-4 w-1/6" />
+                  <Skeleton className="ml-4 h-4 w-1/6" />
+                  <Skeleton className="ml-4 h-4 w-1/6" />
+                  <div className="ml-4 flex w-1/6 items-center justify-center space-x-2">
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <DataTable table={table} />
+          )}
 
           <div className="flex justify-center py-4">
-            <Pagination
-              totalPages={table.getPageCount()}
-              currentPage={table.getState().pagination.pageIndex + 1}
-              onPageChange={(page) => {
-                table.setPageIndex(page - 1);
-              }}
-              visiblePages={3}
-            />
+            {!isLoading && (
+              <Pagination
+                totalPages={table.getPageCount()}
+                currentPage={table.getState().pagination.pageIndex + 1}
+                onPageChange={(page) => {
+                  table.setPageIndex(page - 1);
+                }}
+                visiblePages={3}
+              />
+            )}
           </div>
         </div>
       </main>
