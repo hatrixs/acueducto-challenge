@@ -39,7 +39,7 @@ export const Primary: Story = {
     children: "Button",
     disabled: false,
     className: "",
-    onClick: action("primary clic"),
+    onClick: action("Primary clic"),
   },
 };
 
