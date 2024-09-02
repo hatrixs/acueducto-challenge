@@ -86,8 +86,20 @@ export default function Home() {
     },
   });
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   const handleSearch = () => {
-    table.getColumn(selectedFilter)?.setFilterValue(searchValue);
+    table.getAllColumns().forEach((column) => {
+      column.setFilterValue(undefined);
+    });
+
+    if (searchValue) {
+      table.getColumn(selectedFilter)?.setFilterValue(searchValue);
+    }
   };
 
   useEffect(() => {
@@ -121,6 +133,7 @@ export default function Home() {
             onChange={(event) => {
               setSearchValue(event.target.value);
             }}
+            onKeyDown={handleKeyPress}
           />
 
           <Select
