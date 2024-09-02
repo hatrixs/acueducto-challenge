@@ -2,6 +2,9 @@
 
 This project uses NextJS and Storybook for component documentation.
 
+You can explore the live project here:
+[https://acueducto-challenge.vercel.app/](https://acueducto-challenge.vercel.app/)
+
 ## Prerequisites
 
 - Node.js (version 19 or higher)
