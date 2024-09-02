@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { CircleUserRound } from "lucide-react";
 
 const meta: Meta<typeof Avatar> = {
-  title: "Components/ui/avatar",
+  title: "Components/ui/Avatar",
   component: Avatar,
   parameters: {
     layout: "centered",

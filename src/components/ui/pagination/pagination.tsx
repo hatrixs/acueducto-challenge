@@ -12,39 +12,33 @@ import {
 } from "@/components/ui/pagination";
 import { usePagination, UsePaginationProps } from "./usePagination";
 
-interface Props extends UsePaginationProps {
-  onPageChange?: (page: number) => void;
-}
-
 export const Pagination = ({
   totalPages,
+  currentPage,
   visiblePages = 5,
-  initialPage = 1,
   onPageChange,
-}: Props) => {
-  const pagination = usePagination({ totalPages, visiblePages, initialPage });
-  const { currentPage, visibleRange, isFirstPage, isLastPage } = pagination;
+}: UsePaginationProps) => {
+  const pagination = usePagination({
+    totalPages,
+    currentPage,
+    visiblePages,
+    onPageChange,
+  });
 
-  const handlePageChange = useCallback(
-    (page: number) => {
-      pagination.handlePageChange(page);
-      onPageChange?.(page);
-    },
-    [pagination, onPageChange],
-  );
+  const { visibleRange, isFirstPage, isLastPage } = pagination;
 
   const renderPageLink = useCallback(
     (page: number, isActive: boolean = false) => (
       <PaginationItem key={page}>
         <PaginationLink
           isActive={isActive}
-          onClick={() => handlePageChange(page)}
+          onClick={() => pagination.handlePageChange(page)}
         >
           {page}
         </PaginationLink>
       </PaginationItem>
     ),
-    [handlePageChange],
+    [pagination],
   );
 
   const renderEllipsis = useCallback(
@@ -61,7 +55,7 @@ export const Pagination = ({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            onClick={() => handlePageChange(currentPage - 1)}
+            onClick={pagination.handlePrevious}
             className={
               isFirstPage ? "pointer-events-none opacity-50" : "cursor-pointer"
             }
@@ -87,7 +81,7 @@ export const Pagination = ({
 
         <PaginationItem>
           <PaginationNext
-            onClick={() => handlePageChange(currentPage + 1)}
+            onClick={pagination.handleNext}
             className={
               isLastPage ? "pointer-events-none opacity-50" : "cursor-pointer"
             }

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { action } from "@storybook/addon-actions";
 
 const meta: Meta<typeof Input> = {
-  title: "Components/ui/input",
+  title: "Components/ui/Input",
   component: Input,
   parameters: {
     layout: "centered",

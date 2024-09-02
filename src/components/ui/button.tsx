@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-4 py-2.5 font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus:ring-white",
+  "inline-flex items-center text-white justify-center whitespace-nowrap rounded-lg px-4 py-2.5 font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus:ring-white",
   {
     variants: {
       variant: {
@@ -13,9 +13,6 @@ const buttonVariants = cva(
         secondary:
           "border border-primary-lime text-primary-lime hover:bg-gray-900/90",
       },
-    },
-    defaultVariants: {
-      variant: "primary",
     },
   },
 );

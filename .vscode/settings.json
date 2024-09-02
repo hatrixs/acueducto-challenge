@@ -5,5 +5,8 @@
   // Add those two lines:
   "editor.formatOnSave": true, // Tell VSCode to format files on save
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "css.lint.unknownAtRules": "ignore" // Tell VSCode to use Prettier as default file formatter
+  "css.lint.unknownAtRules": "ignore",
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  } // Tell VSCode to use Prettier as default file formatter
 }

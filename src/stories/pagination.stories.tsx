@@ -1,5 +1,5 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
 import {
   Pagination,
   PaginationContent,
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/pagination";
 
 const meta: Meta<typeof Pagination> = {
-  title: "Components/ui/pagination",
+  title: "Components/ui/Pagination",
   component: Pagination,
   parameters: {
     layout: "centered",
@@ -29,12 +29,45 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const PaginationWrapper: Story = {
-  render: (args) => <Pagination {...args} />,
-  args: {
-    initialPage: 1,
-    totalPages: 20,
-    visiblePages: 5,
-    onPageChange: action("Page change to"),
+  render: (args) => {
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+      args.onPageChange(page);
+    };
+
+    return (
+      <Pagination
+        {...args}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+        totalPages={20}
+      />
+    );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const PaginationExample = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  return (
+    <Pagination
+      currentPage={currentPage}
+      onPageChange={handlePageChange}
+      totalPages={20}
+    />
+  );
+};
+        `,
+      },
+    },
   },
 };
 

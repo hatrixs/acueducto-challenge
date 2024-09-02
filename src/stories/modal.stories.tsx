@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/modal";
 
 const meta: Meta<typeof Modal> = {
-  title: "Components/ui/modal",
+  title: "Components/ui/Modal",
   component: Modal,
   parameters: {
     layout: "centered",
@@ -44,7 +44,7 @@ export const Default: Story = {
   render: (args) => (
     <Modal {...args}>
       <ModalTrigger asChild>
-        <Button>Sign in</Button>
+        <Button variant="primary">Sign in</Button>
       </ModalTrigger>
       <ModalContent className="sm:max-w-[425px]">
         <ModalHeader>
@@ -57,7 +57,7 @@ export const Default: Story = {
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button>Sign In</Button>
+          <Button variant="primary">Sign In</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
