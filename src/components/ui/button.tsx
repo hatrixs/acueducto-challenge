@@ -11,7 +11,7 @@ const buttonVariants = cva(
         primary:
           "border border-primary-mint bg-primary-lime text-[#232A33] hover:bg-primary-lime/90",
         secondary:
-          "border border-primary-lime text-primary-lime hover:bg-gray-900/90",
+          "border border-primary-lime text-primary-lime hover:bg-neutral-slate/50",
       },
     },
   },

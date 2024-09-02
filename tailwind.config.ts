@@ -13,6 +13,7 @@ const config = {
     extend: {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
+        monument: ["MonumentExtended", "sans-serif"],
       },
       colors: {
         primary: {

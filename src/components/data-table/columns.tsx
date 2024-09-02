@@ -1,13 +1,20 @@
 import Image from "next/image";
 import { ColumnDef, SortDirection } from "@tanstack/react-table";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Badge, BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDownIcon, ChevronUpIcon, Eye, Trash2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import funnel from "@/images/funnel.svg";
 import eye from "@/images/eye.svg";
 import trash from "@/images/trash.svg";
 
-type Client = {
+export type Client = {
   id: number;
   name: string;
   email: string;
@@ -28,7 +35,11 @@ const SortedIcon = ({ isSorted }: { isSorted: false | SortDirection }) => {
   return null;
 };
 
-export const columns: ColumnDef<Client>[] = [
+export const createColumns = (
+  onOpenModal: (client: Client) => void,
+  selectedStatusFilter: string,
+  setSelectedStatusFilter: (status: string) => void,
+): ColumnDef<Client>[] => [
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -58,10 +69,40 @@ export const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "status",
     header: () => (
-      <div className="m-auto flex w-[115px] items-center justify-between">
-        <span>Estatus</span>
-        <Image src={funnel} alt="funnel" width={14.4} />
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="m-auto flex w-[115px] cursor-pointer items-center justify-between">
+            <span>Estatus</span>
+            <Image src={funnel} alt="funnel" width={14.4} />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="p-3">
+          <div className="flex flex-col gap-2">
+            {["Enviado", "Pendiente", "Cancelado"].map((status) => (
+              <div key={status} className="flex items-center space-x-2">
+                <Checkbox
+                  id={status.toLowerCase()}
+                  className="bg-neutral-carbon"
+                  checked={selectedStatusFilter === status}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setSelectedStatusFilter(status);
+                    } else {
+                      setSelectedStatusFilter("");
+                    }
+                  }}
+                />
+                <label
+                  htmlFor={status.toLowerCase()}
+                  className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {status}
+                </label>
+              </div>
+            ))}
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     ),
     cell: ({ row }) => {
       const status: string = row.getValue("status");
@@ -96,7 +137,7 @@ export const columns: ColumnDef<Client>[] = [
 
       return (
         <div className="flex items-center justify-center gap-[10px]">
-          <Button className="p-0" onClick={() => alert(JSON.stringify(client))}>
+          <Button className="p-0" onClick={() => onOpenModal(client)}>
             <Image src={eye} alt="eye" />
           </Button>
           <Button className="p-0" onClick={() => confirm("Delete row?")}>

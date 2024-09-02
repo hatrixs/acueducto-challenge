@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   getCoreRowModel,
@@ -12,12 +12,13 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { columns } from "@/components/data-table/columns";
+import { Client, createColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/data-table";
 import { Avatar } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -26,14 +27,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "@/components/ui/modal";
 
 import wave from "@/images/logo.svg";
 import user from "@/images/user-circle.svg";
 import data from "@/data/clients.json";
+import "./fonts.css";
 
 export default function Home() {
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState("name");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState("");
+
+  const handleOpenModal = (client: Client) => {
+    setSelectedClient(client);
+    setIsModalOpen(true);
+  };
+
+  const columns = createColumns(
+    handleOpenModal,
+    selectedStatusFilter,
+    setSelectedStatusFilter,
+  );
 
   const table = useReactTable({
     data,
@@ -49,6 +75,18 @@ export default function Home() {
       columnFilters,
     },
   });
+
+  const handleSearch = () => {
+    table.getColumn(selectedFilter)?.setFilterValue(searchValue);
+  };
+
+  useEffect(() => {
+    if (selectedStatusFilter) {
+      table.getColumn("status")?.setFilterValue(selectedStatusFilter);
+    } else {
+      table.getColumn("status")?.setFilterValue("");
+    }
+  }, [selectedStatusFilter, table]);
 
   return (
     <div className="min-h-screen bg-neutral-carbon">
@@ -69,13 +107,17 @@ export default function Home() {
 
           <Input
             label="Búsqueda"
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            value={searchValue}
             onChange={(event) => {
-              table.getColumn("email")?.setFilterValue(event.target.value);
+              setSearchValue(event.target.value);
             }}
           />
 
-          <Select defaultValue="name">
+          <Select
+            defaultValue="name"
+            value={selectedFilter}
+            onValueChange={setSelectedFilter}
+          >
             <SelectTrigger className="md:w-[288px]">
               <SelectValue placeholder="Selecciona un filtro" />
             </SelectTrigger>
@@ -90,7 +132,11 @@ export default function Home() {
             </SelectContent>
           </Select>
 
-          <Button variant="primary" className="w-[120px]">
+          <Button
+            variant="primary"
+            className="md:w-[120px]"
+            onClick={handleSearch}
+          >
             Buscar
           </Button>
         </div>
@@ -105,11 +151,83 @@ export default function Home() {
               onPageChange={(page) => {
                 table.setPageIndex(page - 1);
               }}
-              visiblePages={5}
+              visiblePages={3}
             />
           </div>
         </div>
       </main>
+
+      <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <ModalContent className="max-w-[calc(100%-2rem)] sm:max-w-[500px] md:max-w-[880px]">
+          <ModalHeader>
+            <ModalTitle className="font-monument font-normal">
+              Detalles de la orden
+            </ModalTitle>
+          </ModalHeader>
+          <ModalBody className="rounded-lg bg-neutral-slate p-5">
+            {selectedClient && (
+              <div className="flex flex-col gap-y-6 md:flex-row md:gap-x-10">
+                <div className="flex flex-col gap-y-[10px]">
+                  <div className="flex flex-col gap-y-[10px]">
+                    <Label className="text-[18px] font-bold text-[#F0F1F5]">
+                      Cliente
+                    </Label>
+                    <span>{selectedClient.name}</span>
+                  </div>
+                  <div className="flex flex-col gap-y-[10px]">
+                    <Label className="text-[18px] font-bold text-[#F0F1F5]">
+                      Correo
+                    </Label>
+                    <span>{selectedClient.email}</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-y-[10px]">
+                  <div className="flex flex-col gap-y-[10px]">
+                    <Label className="text-[18px] font-bold text-[#F0F1F5]">
+                      No. de orden
+                    </Label>
+                    <span>{selectedClient.order_number}</span>
+                  </div>
+                  <div className="flex flex-col gap-y-[10px]">
+                    <Label className="text-[18px] font-bold text-[#F0F1F5]">
+                      Enviado el
+                    </Label>
+                    <span>23/01/2024 a las 14:02 hrs</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex flex-col gap-y-[10px]">
+                    <Label className="text-[18px] font-bold text-[#F0F1F5]">
+                      Costo
+                    </Label>
+                    <div className="flex justify-between">
+                      <span>Productos</span>
+                      <span>$25,850.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Envio</span>
+                      <span>$1,032.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total</span>
+                      <span>26,882.00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="secondary"
+              className="md:w-[120px]"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Volver
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
