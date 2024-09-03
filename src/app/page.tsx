@@ -77,15 +77,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-neutral-carbon">
       <Header />
-      <main className="flex flex-col gap-y-[30px] px-4 py-6 md:px-20 md:py-[30px]">
-        <SearchSection
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
-          selectedFilter={selectedFilter}
-          setSelectedFilter={setSelectedFilter}
-          handleSearch={handleSearch}
-        />
-        <TableSection isLoading={isLoading} table={table} />
+      <main className="px-4 py-6 md:px-20 md:py-[30px]">
+        <div className="container mx-auto flex flex-col gap-y-[30px]">
+          <SearchSection
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            selectedFilter={selectedFilter}
+            setSelectedFilter={setSelectedFilter}
+            handleSearch={handleSearch}
+          />
+          <TableSection isLoading={isLoading} table={table} />
+        </div>
       </main>
       <ClientModal
         isOpen={isModalOpen}
